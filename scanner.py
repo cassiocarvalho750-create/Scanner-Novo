@@ -45,7 +45,7 @@ def fetch_intraday_ok(ticker):
 
 def market_of(tk): return "B3" if tk.endswith(".SA") else "EUA"
 
-def scan(tickers, days_back):
+def scan(tickers, days_back=1):
     """Retorna lista de sinais nos ultimos `days_back` candles."""
     hits=[]
     today = pd.Timestamp(datetime.date.today())
@@ -61,17 +61,13 @@ def scan(tickers, days_back):
         tail = s.iloc[-days_back:]
         for idx, row in tail.iterrows():
             if bool(row["signal_win"]):
-                # candle em formacao? se a data do candle == hoje e ha pregao
                 is_forming = (idx.normalize() == today)
                 entry = row["Close"]; low = row["Low"]; r = entry - low
                 r_pct = (r/entry*100) if entry>0 else 0
-                # volume medio de 20 dias (em milhoes de moeda: preco*volume)
-                pos_v = s.index.get_loc(idx)
-                vol20 = s["Volume"].iloc[max(0,pos_v-19):pos_v+1].mean()
-                px20  = s["Close"].iloc[max(0,pos_v-19):pos_v+1].mean()
-                fin_vol = (vol20 * px20) / 1e6 if not np.isnan(vol20) else 0.0  # volume financeiro medio (milhoes)
-                # ha quantos candles o DIDI e o ADX dispararam?
                 pos = s.index.get_loc(idx)
+                vol20 = s["Volume"].iloc[max(0,pos-19):pos+1].mean()
+                px20  = s["Close"].iloc[max(0,pos-19):pos+1].mean()
+                fin_vol = (vol20 * px20) / 1e6 if not np.isnan(vol20) else 0.0
                 didi_ago = adx_ago = None
                 for k in range(0,6):
                     if pos-k>=0 and bool(s["didi_cross"].iloc[pos-k]): didi_ago=k; break

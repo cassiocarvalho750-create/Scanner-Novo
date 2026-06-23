@@ -74,6 +74,60 @@ B3_BASE = [
 def get_b3():
     return [t + ".SA" for t in B3_BASE]
 
+# Lista fixa das principais acoes liquidas dos EUA (S&P500 / NASDAQ100 mais negociadas).
+# Usada quando a busca na Wikipedia falha (ex.: bloqueio 403 em servidores).
+US_BASE = [
+    "AAPL","MSFT","NVDA","AMZN","GOOGL","GOOG","META","TSLA","AVGO","AMD",
+    "NFLX","ADBE","CRM","ORCL","IBM","INTC","QCOM","TXN","AMAT","MU",
+    "ADI","LRCX","KLAC","SNPS","CDNS","MRVL","NXPI","ON","MCHP","FTNT",
+    "PANW","CRWD","DDOG","SNOW","ZS","NET","MDB","TEAM","WDAY","ADSK",
+    "INTU","NOW","ROP","ANSS","CTSH","ACN","CSCO","HPQ","HPE","DELL",
+    "WDC","STX","SWKS","TER","GLW","KEYS","GRMN","PTC","TYL","FSLR",
+    "ENPH","SEDG","GEN","AKAM","JNPR","FFIV","EPAM","CDW","NTAP","ZBRA",
+    "TRMB","DIS","CMCSA","T","VZ","TMUS","CHTR","WBD","EA","TTWO",
+    "OMC","IPG","LYV","NWSA","FOXA","MTCH","HD","LOW","NKE","SBUX",
+    "MCD","TJX","BKNG","CMG","MAR","HLT","YUM","ROST","DG","DLTR",
+    "ORLY","AZO","LULU","ULTA","DPZ","DRI","EBAY","ETSY","BBY","TSCO",
+    "GPC","KMX","POOL","WSM","RL","TPR","DECK","HAS","GM","F",
+    "RIVN","LCID","ABNB","UBER","LYFT","EXPE","CCL","RCL","NCLH","WYNN",
+    "LVS","MGM","CZR","WMT","COST","PG","KO","PEP","MDLZ","CL",
+    "KMB","GIS","KHC","MO","PM","STZ","KDP","KR","SYY","ADM",
+    "HSY","MKC","CHD","CLX","TSN","CAG","CPB","HRL","K","TAP",
+    "BG","EL","MNST","UNH","JNJ","LLY","ABBV","MRK","PFE","TMO",
+    "ABT","DHR","BMY","AMGN","GILD","ISRG","VRTX","REGN","CVS","CI",
+    "HUM","ELV","MDT","SYK","BSX","ZTS","BDX","BIIB","MRNA","DXCM",
+    "IDXX","IQV","RMD","A","HCA","CNC","MCK","COR","CAH","WAT",
+    "MTD","WST","ALGN","ZBH","BAX","HOLX","STE","COO","PODD","TFX",
+    "DVA","JPM","BAC","WFC","GS","MS","C","BLK","SCHW","AXP",
+    "SPGI","V","MA","PYPL","COF","USB","PNC","TFC","BK","CME",
+    "ICE","MMC","AON","AJG","MCO","MSCI","TRV","ALL","PGR","CB",
+    "AIG","MET","PRU","AFL","ACGL","HIG","FITB","HBAN","RF","CFG",
+    "KEY","MTB","NTRS","STT","FDS","NDAQ","CBOE","DFS","SYF","FIS",
+    "GPN","BRK-B","WTW","BRO","CINF","L","RJF","TROW","IVZ","BEN",
+    "AMP","CPAY","BA","CAT","GE","HON","UPS","RTX","LMT","DE",
+    "UNP","MMM","GD","NOC","EMR","ETN","ITW","CSX","NSC","FDX",
+    "PH","GEV","CARR","OTIS","CMI","PCAR","ROK","AME","FTV","DOV",
+    "XYL","IR","EFX","VRSK","WAB","PWR","HWM","TT","JCI","LHX",
+    "TDG","AXON","ODFL","URI","FAST","PAYX","ADP","CTAS","RSG","WM",
+    "GWW","SNA","SWK","HUBB","IEX","NDSN","PNR","ALLE","MAS","JBHT",
+    "CHRW","EXPD","TXT","BR","LDOS","GGG","XOM","CVX","COP","SLB",
+    "EOG","MPC","PSX","VLO","OXY","WMB","KMI","OKE","HES","DVN",
+    "FANG","HAL","BKR","TRGP","CTRA","APA","EQT","LNG","TPL","LIN",
+    "APD","SHW","ECL","NEM","FCX","DOW","NUE","PPG","ALB","DD",
+    "CTVA","VMC","MLM","IFF","PKG","AMCR","AVY","BALL","CF","MOS",
+    "FMC","STLD","CE","EMN","IP","SEE","WLK","NEE","DUK","SO",
+    "D","AEP","EXC","SRE","XEL","ED","PEG","WEC","ES","AWK",
+    "DTE","PPL","AEE","CMS","CNP","ATO","NI","LNT","EVRG","FE",
+    "ETR","PCG","EIX","AES","NRG","PLD","AMT","EQIX","CCI","PSA",
+    "O","SPG","WELL","DLR","VICI","AVB","EQR","EXR","INVH","MAA",
+    "ARE","VTR","SBAC","UDR","CPT","KIM","REG","HST","BXP","FRT",
+    "DOC","SPY","QQQ","IWM","DIA","VTI","VOO","XLF","XLE","XLK",
+    "XLV","XLI","XLY","XLP","XLU","XLB","XLRE","SMH","SOXX","ARKK",
+    "GLD","SLV","TLT","HYG","EEM","EFA","XBI","KRE","GDX",
+]
+def get_us_fixed():
+    return list(US_BASE)
+
 def get_universe(quick=False):
     if quick:
         u = (["AAPL","MSFT","NVDA","AMZN","GOOGL","META","TSLA","AMD","CRM","NFLX",
@@ -84,7 +138,12 @@ def get_universe(quick=False):
                 "MGLU3.SA","ASAI3.SA"])
         return sorted(set(u))
     sp, ndx, b3 = get_sp500(), get_nasdaq100(), get_b3()
-    return sorted(set(sp + ndx + b3))
+    us = sp + ndx
+    # se a Wikipedia falhou (lista vazia), usa a lista fixa de EUA
+    if not us:
+        us = get_us_fixed()
+        print(f"  [info] usando lista fixa de {len(us)} acoes dos EUA (Wikipedia indisponivel)")
+    return sorted(set(us + b3))
 
 
 # ── Download + execucao ──────────────────────────────────────────────────────

@@ -1,37 +1,69 @@
-name: Scanner DIDI ADX BB
+# Scanner na nuvem — passo a passo (GitHub)
 
-on:
-  schedule:
-    # horarios em UTC. Brasilia = UTC-3.
-    # 13h BR = 16h UTC | 16h BR = 19h UTC | 19h BR = 22h UTC
-    - cron: '0 16,19,22 * * 1-5'   # seg a sex
-  workflow_dispatch:   # permite rodar manualmente pelo botao tambem
+O scanner vai rodar sozinho às **13h, 16h e 19h (Brasília), de segunda a sexta**,
+e publicar um site que você abre no celular. Você não precisa deixar o PC ligado.
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
+## O que você vai fazer (uma vez só)
 
-jobs:
-  scan:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Baixar os arquivos do repositorio
-        uses: actions/checkout@v4
+### 1. Criar o repositório
+1. Entre no GitHub (você já tem conta).
+2. Clique em **New repository** (botão verde, ou em https://github.com/new).
+3. Nome: `scanner` (ou o que preferir).
+4. Marque **Public** (necessário para o site gratuito do GitHub Pages).
+5. Clique em **Create repository**.
 
-      - name: Instalar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+### 2. Subir os arquivos
+1. Na página do repositório novo, clique em **uploading an existing file**
+   (ou **Add file → Upload files**).
+2. Arraste **TODOS** os arquivos desta pasta para a área de upload, INCLUSIVE
+   a pasta `.github` (ela contém o agendador). 
+   - Dica: se o navegador não deixar arrastar a pasta `.github`, veja a seção
+     "Se a pasta .github não subir" no final.
+3. Escreva qualquer descrição em "Commit changes" e clique no botão verde
+   **Commit changes**.
 
-      - name: Instalar bibliotecas
-        run: pip install yfinance pandas numpy
+### 3. Ligar o GitHub Pages
+1. No repositório, vá em **Settings** (engrenagem no topo).
+2. No menu da esquerda, clique em **Pages**.
+3. Em "Build and deployment" → "Source", escolha **Deploy from a branch**.
+4. Em "Branch", escolha **gh-pages** e pasta **/ (root)**, clique **Save**.
+   - OBS: a branch `gh-pages` só aparece DEPOIS que o scanner rodar a 1a vez
+     (passo 4). Se não aparecer ainda, faça o passo 4 primeiro e volte aqui.
 
-      - name: Rodar o scanner e gerar o site
-        run: python run_cloud.py
+### 4. Rodar a primeira vez (sem esperar o horário)
+1. No repositório, vá na aba **Actions**.
+2. Se aparecer um aviso amarelo pedindo para habilitar workflows, clique em
+   **I understand my workflows, go ahead and enable them**.
+3. Clique no workflow **Scanner DIDI ADX BB** na lista à esquerda.
+4. Clique em **Run workflow** (botão à direita) → **Run workflow**.
+5. Espere alguns minutos (varre os dois mercados). Quando ficar verde, terminou.
+6. Volte ao passo 3 (Pages) se a branch `gh-pages` ainda não estava disponível.
 
-      - name: Publicar no GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
+### 5. Abrir no celular
+- O endereço do seu site é:
+  **https://SEU_USUARIO.github.io/scanner/**
+  (troque SEU_USUARIO pelo seu nome de usuário do GitHub, e `scanner` pelo nome
+  que você deu ao repositório).
+- Abra esse link no navegador do celular e **adicione à tela inicial**
+  (menu do navegador → "Adicionar à tela de início"). Vira quase um app.
+
+## Pronto!
+A partir daí ele roda sozinho 3x ao dia, seg–sex. Sempre que abrir o link,
+verá o resultado mais recente, com o horário da última atualização no topo.
+
+---
+
+## Se a pasta .github não subir pelo navegador
+O GitHub às vezes esconde pastas que começam com ponto. Alternativa:
+1. No repositório, clique **Add file → Create new file**.
+2. No nome do arquivo, digite exatamente:
+   `.github/workflows/scanner.yml`
+   (ao digitar as barras, o GitHub cria as pastas sozinho).
+3. Cole todo o conteúdo do arquivo `scanner.yml` (abra o que está nesta pasta
+   com o Bloco de Notas e copie tudo).
+4. Clique **Commit changes**.
+
+## Horários (para referência)
+- 13h, 16h, 19h Brasília = 16h, 19h, 22h UTC.
+- Estão no arquivo `.github/workflows/scanner.yml`, linha do `cron`.
+- Para mudar, edite os números das horas UTC (lembre: Brasília + 3 = UTC).
